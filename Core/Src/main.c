@@ -239,13 +239,14 @@ int main(void)
   //MX_IWDG_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, SET);
-  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
-  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);
+//  HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, SET);
+//  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
+//  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);
   HAL_UART_Receive_IT(&huart1, &rxData, 1);
   HAL_TIM_Base_Start_IT(&htim6);
+  ledStatus('R');//xanh la
   turnOnA76XX();
-  ledStatus('R');
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -636,11 +637,11 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, SPI1_CS_SDCARD_Pin|LED_GREEN_Pin|LED_RED_Pin|LED_BLUE_Pin
-                          |LED_STATUS_Pin|PAYLOAD_2_Pin|PAYLOAD_3_Pin|PAYLOAD_4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, SPI1_CS_SDCARD_Pin|LED_BLUE_Pin
+                          |PAYLOAD_2_Pin|PAYLOAD_3_Pin|PAYLOAD_4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, ENABLE_A76XX_Pin|GPIO_PIN_12|GPIO_PIN_14|PAYLOAD_6_Pin
+  HAL_GPIO_WritePin(GPIOB, ENABLE_A76XX_Pin|GPIO_PIN_12|LED_GREEN_Pin|LED_RED_Pin|GPIO_PIN_14|PAYLOAD_6_Pin
                           |PAYLOAD_7_Pin|PAYLOAD_8_Pin|PAYLOAD_9_Pin|PAYLOAD_10_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -648,19 +649,27 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PAYLOAD_5_GPIO_Port, PAYLOAD_5_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : SPI1_CS_SDCARD_Pin LED_GREEN_Pin LED_RED_Pin LED_BLUE_Pin
                            LED_STATUS_Pin PAYLOAD_2_Pin PAYLOAD_3_Pin PAYLOAD_4_Pin */
-  GPIO_InitStruct.Pin = SPI1_CS_SDCARD_Pin|LED_GREEN_Pin|LED_RED_Pin|LED_BLUE_Pin
-                          |LED_STATUS_Pin|PAYLOAD_2_Pin|PAYLOAD_3_Pin|PAYLOAD_4_Pin;
+  GPIO_InitStruct.Pin = SPI1_CS_SDCARD_Pin|LED_BLUE_Pin
+                          |PAYLOAD_2_Pin|PAYLOAD_3_Pin|PAYLOAD_4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  GPIO_InitStruct.Pin =   LED_STATUS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+
   /*Configure GPIO pins : ENABLE_A76XX_Pin PB12 PB14 PAYLOAD_6_Pin
                            PAYLOAD_7_Pin PAYLOAD_8_Pin PAYLOAD_9_Pin PAYLOAD_10_Pin */
-  GPIO_InitStruct.Pin = ENABLE_A76XX_Pin|GPIO_PIN_12|GPIO_PIN_14|PAYLOAD_6_Pin
+  GPIO_InitStruct.Pin = ENABLE_A76XX_Pin|LED_GREEN_Pin|LED_RED_Pin|GPIO_PIN_12|GPIO_PIN_14|PAYLOAD_6_Pin
                           |PAYLOAD_7_Pin|PAYLOAD_8_Pin|PAYLOAD_9_Pin|PAYLOAD_10_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -780,17 +789,17 @@ int connectMQTT(void){
 }
 
 void ledStatus(char cmd){
-	if(cmd == 'G'){
+	if(cmd == 'R'){
 		HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, SET);
 		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
 		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, RESET);
 	}
-	else if(cmd == 'R'){
+	else if(cmd == 'B'){//chua sua
 		HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, SET);
 		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, RESET);
 		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);
 	}
-	else if(cmd == 'B'){
+	else if(cmd == 'G'){
 		HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, RESET);
 		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
 		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);

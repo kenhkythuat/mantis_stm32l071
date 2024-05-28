@@ -60,8 +60,8 @@ all: main-build
 main-build: AgriConnect_Mantis.elf secondary-outputs
 
 # Tool invocations
-AgriConnect_Mantis.elf AgriConnect_Mantis.map: $(OBJS) $(USER_OBJS) C:\Users\HaoNguyen\Desktop\AgriConnect_Mantis\AgriConnect_Mantis\STM32L071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "AgriConnect_Mantis.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\HaoNguyen\Desktop\AgriConnect_Mantis\AgriConnect_Mantis\STM32L071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="AgriConnect_Mantis.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+AgriConnect_Mantis.elf AgriConnect_Mantis.map: $(OBJS) $(USER_OBJS) D:\Agriconnect\AgriConnect_Mantis\AgriConnect_Mantis\AgriConnect_Mantis\STM32L071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "AgriConnect_Mantis.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"D:\Agriconnect\AgriConnect_Mantis\AgriConnect_Mantis\AgriConnect_Mantis\STM32L071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="AgriConnect_Mantis.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

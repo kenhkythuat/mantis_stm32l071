@@ -17,12 +17,12 @@
 
 // Codename of the farm, where we deploy this node to.
 #ifndef FARM
-  #define FARM "phumyfarm-brvt"
+  #define FARM "vuonsinhthai-thanhvang"
 #endif
 
 // Serial number. Must be lower case.
 #ifndef SERIAL_NUMBER
-  #define SERIAL_NUMBER "sw000171"
+  #define SERIAL_NUMBER "sw000120"
 #endif
 
 
@@ -36,13 +36,11 @@
 #define MQTT_PORT 1883
 
 
-
-
 #define MQTT_TOPIC_ACTUATOR_STATUS FARM "/sn/" SERIAL_NUMBER "/as/"
 // MQTT topic to subscribe and get command to switch on/off actuator
 #define MQTT_TOPIC_ACTUATOR_CONTROL FARM "/snac/" SERIAL_NUMBER "/"
 
-#define NUMBER_LOADS 5
+#define NUMBER_LOADS 6
 #define LENGTH_STATUS_PAYLOAD_0_9  6*NUMBER_LOADS + 1
 #define LENGTH_STATUS_PAYLOAD_10_18  6*NUMBER_LOADS + 2 + NUMBER_LOADS%10
 
