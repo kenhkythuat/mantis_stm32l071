@@ -1,0 +1,5 @@
+../Core/Src/status_coild.c:23:6:Flash_Erase	32	static
+../Core/Src/status_coild.c:34:6:read_flash_payload	16	static
+../Core/Src/status_coild.c:50:10:Read_Page	16	static
+../Core/Src/status_coild.c:54:6:Flash_write	16	static
+../Core/Src/status_coild.c:61:6:read_statusload	16	static

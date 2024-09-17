@@ -1,0 +1,15 @@
+../Drivers/CMSIS/Include/core_cm0plus.h:983:34:__NVIC_SystemReset	1
+../Core/Src/common_simcom.c:31:5:read_signal_quality	3
+../Core/Src/common_simcom.c:46:7:fn_check_signal_simcom	7
+../Core/Src/common_simcom.c:88:5:enable_mqtt_on_gsm_modem	3
+../Core/Src/common_simcom.c:101:5:acquire_gsm_mqtt_client	4
+../Core/Src/common_simcom.c:129:5:connect_mqtt_server_by_gsm	4
+../Core/Src/common_simcom.c:155:5:subscribe_mqtt_via_gsm	5
+../Core/Src/common_simcom.c:186:5:publish_mqtt_via_gsm	6
+../Core/Src/common_simcom.c:234:5:check_error_mqtt_via_gsm	13
+../Core/Src/common_simcom.c:283:5:stop_mqtt_via_gsm	8
+../Core/Src/common_simcom.c:326:5:update_status	7
+../Core/Src/common_simcom.c:353:6:restart_stm32	0
+../Core/Src/common_simcom.c:362:5:init_cricket	10
+../Core/Src/common_simcom.c:400:5:event_wait_function	4
+../Core/Src/common_simcom.c:423:5:check_active_payload	5

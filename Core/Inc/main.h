@@ -36,16 +36,51 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#include "stdbool.h"
+float Level_Pin (void);
+void read_statusload();
+void Flash_Erase(uint32_t numberpages);
+void Flash_write(int move ,uint32_t Data);
+uint32_t Read_Page();
+extern uint32_t value_page0;
+extern uint32_t value_page1;
+extern uint32_t value_page2;
+extern uint32_t value_page3;
+extern uint32_t value_Relay;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define a7672 1
+#define a7670 2
+#define a7677 3
+#define true 1
+#define false 0
 
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+extern void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size);
+extern int connectMQTT(void);
+extern void sendingToSimcomA76xx(char *cmd);
+extern void create_JSON(void);
+extern float fn_check_signal_simcom(void);
+extern int acquire_gsm_mqtt_client(void);
+extern int enable_mqtt_on_gsm_modem(void);
+extern int connect_mqtt_server_by_gsm(void);
+extern int subscribe_mqtt_via_gsm(void);
+extern int publish_mqtt_via_gsm(void);
+extern int read_signal_quality(void);
+extern int stop_mqtt_via_gsm(void);
+extern int check_error_mqtt_via_gsm(void);
+extern int update_status(void);
+extern void restart_stm32(void);
+extern int init_cricket(void);
+extern int event_wait_function(void);
+extern int check_active_payload(void);
+extern void read_flash_payload(void);
+extern void ledStatus(char cmd);
 
 /* USER CODE END EM */
 
@@ -57,40 +92,16 @@ void sendingToSimcomA76xx(char *cmd);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define USART4_TX_ESP32_Pin GPIO_PIN_0
-#define USART4_TX_ESP32_GPIO_Port GPIOA
-#define USART4_RX_ESP32_Pin GPIO_PIN_1
-#define USART4_RX_ESP32_GPIO_Port GPIOA
-#define USART2_TX_GNSS_Pin GPIO_PIN_2
-#define USART2_TX_GNSS_GPIO_Port GPIOA
-#define USART2_RX_GNSS_Pin GPIO_PIN_3
-#define USART2_RX_GNSS_GPIO_Port GPIOA
-#define SPI1_SCK_SDCARD_Pin GPIO_PIN_5
-#define SPI1_SCK_SDCARD_GPIO_Port GPIOA
-#define SPI1_MISO_SDCARD_Pin GPIO_PIN_6
-#define SPI1_MISO_SDCARD_GPIO_Port GPIOA
-#define SPI1_MOSI_SDCARD_Pin GPIO_PIN_7
-#define SPI1_MOSI_SDCARD_GPIO_Port GPIOA
-#define SPI1_CS_SDCARD_Pin GPIO_PIN_4
-#define SPI1_CS_SDCARD_GPIO_Port GPIOC
-#define ENABLE_A76XX_Pin GPIO_PIN_1
-#define ENABLE_A76XX_GPIO_Port GPIOB
-#define I2C2_SCL_DS3231_Pin GPIO_PIN_10
-#define I2C2_SCL_DS3231_GPIO_Port GPIOB
-#define I2C2_SDA_DS3231_Pin GPIO_PIN_11
-#define I2C2_SDA_DS3231_GPIO_Port GPIOB
-#define LED_GREEN_Pin GPIO_PIN_0
-#define LED_GREEN_GPIO_Port GPIOB
-#define LED_RED_Pin GPIO_PIN_2
-#define LED_RED_GPIO_Port GPIOB
 #define LED_BLUE_Pin GPIO_PIN_5
 #define LED_BLUE_GPIO_Port GPIOC
+#define LED_GREEN_Pin GPIO_PIN_0
+#define LED_GREEN_GPIO_Port GPIOB
+#define A76XX_PWRKEY_Pin GPIO_PIN_1
+#define A76XX_PWRKEY_GPIO_Port GPIOB
+#define LED_RED_Pin GPIO_PIN_2
+#define LED_RED_GPIO_Port GPIOB
 #define LED_STATUS_Pin GPIO_PIN_11
 #define LED_STATUS_GPIO_Port GPIOA
-#define USART1_TX_A76XX_Pin GPIO_PIN_9
-#define USART1_TX_A76XX_GPIO_Port GPIOA
-#define USART1_RX_A76XX_Pin GPIO_PIN_10
-#define USART1_RX_A76XX_GPIO_Port GPIOA
 #define PAYLOAD_1_Pin GPIO_PIN_15
 #define PAYLOAD_1_GPIO_Port GPIOA
 #define PAYLOAD_2_Pin GPIO_PIN_10
@@ -113,6 +124,30 @@ void sendingToSimcomA76xx(char *cmd);
 #define PAYLOAD_10_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+extern char rxBuffer[150];
+extern char rx_data_sim[150];
+extern char AT_COMMAND[100];
+extern int isPBDONE;
+extern int isATOK;
+extern int onReay;
+extern int isConnectMQTT;
+extern int previousTick;
+extern int timeOutConnectMQTT;
+extern int payLoadPin,payLoadStatus;
+extern char array_json[150];
+extern float Data_Percentage_pin;
+extern float SignalStrength;
+extern int rssi;
+extern int isConnectSimcomA76xx;
+extern bool fn_Enable_MQTT;
+extern bool fn_Connect_MQTT;
+extern bool fn_CheckSim;
+extern bool fn_Subcribe_MQTT;
+extern bool fn_Publish_MQTT;
+extern bool fn_Acquier_MQTT;
+extern bool fn_update_status;
+extern GPIO_TypeDef* GPIO_LOAD_PORT[10];
+extern unsigned int GPIO_LOAD_PIN[10];
 
 /* USER CODE END Private defines */
 
