@@ -1,5 +1,0 @@
-../Core/Src/status_coild.c:23:6:Flash_Erase	1
-../Core/Src/status_coild.c:34:6:read_flash_payload	2
-../Core/Src/status_coild.c:50:10:Read_Page	1
-../Core/Src/status_coild.c:54:6:Flash_write	1
-../Core/Src/status_coild.c:61:6:read_statusload	2
