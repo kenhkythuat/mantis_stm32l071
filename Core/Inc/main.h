@@ -39,9 +39,9 @@ extern "C" {
 #include "stdbool.h"
 float Level_Pin (void);
 void read_statusload();
-void Flash_Erase(uint32_t numberpages);
-void Flash_write(int move ,uint32_t Data);
-uint32_t Read_Page();
+void flash_erase(uint32_t numberpages);
+void write_flash(int move ,uint32_t Data);
+uint32_t read_page();
 extern uint32_t value_page0;
 extern uint32_t value_page1;
 extern uint32_t value_page2;

@@ -18,7 +18,7 @@ char array_json[150];
 
 void send_to_simcom_a76xx(char *cmd) {
   printf("STM32 Write: %s", cmd);
-  HAL_UART_Transmit(&huart1, (uint8_t *) cmd, strlen(cmd), 1000);
+  HAL_UART_Transmit(&huart1, (uint8_t *)cmd, strlen(cmd), 1000);
 }
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
@@ -29,9 +29,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
     times = strlen(rx_buffer);
     for (int i = 0; i < times; i++) {
       rx_data_sim[i] = rx_buffer[i];
-      if ((char) rx_buffer[i] == (char) SERIAL_NUMBER[5] &&
-          (char) rx_buffer[i + 1] == (char) SERIAL_NUMBER[6] &&
-          (char) rx_buffer[i + 2] == (char) SERIAL_NUMBER[7]) {
+      if ((char)rx_buffer[i] == (char)SERIAL_NUMBER[5] &&
+          (char)rx_buffer[i + 1] == (char)SERIAL_NUMBER[6] &&
+          (char)rx_buffer[i + 2] == (char)SERIAL_NUMBER[7]) {
         payLoadPin = (rx_buffer[i + 4] - 48);
 #if SIMCOM_MODEL == a7672
         if (rx_buffer[(i + 29)] == 49 && is_pb_done == true)
@@ -45,7 +45,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
           HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1],
                             GPIO_LOAD_PIN[payLoadPin - 1], 1);
           onReay++;
-          if (onReay >= NUMBER_LOADS) { onReay = NUMBER_LOADS; }
+          if (onReay >= NUMBER_LOADS) {
+            onReay = NUMBER_LOADS;
+          }
         }
 #if SIMCOM_MODEL == a7672
         if (rx_buffer[(i + 29)] == 48 && is_pb_done == true)
@@ -59,11 +61,13 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
           HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1],
                             GPIO_LOAD_PIN[payLoadPin - 1], 0);
           onReay--;
-          if (onReay <= 0) { onReay = 0; }
+          if (onReay <= 0) {
+            onReay = 0;
+          }
         }
       }
     }
-    if ((strstr((char *) rx_buffer, "+CMQTTCONNLOST") != NULL) &&
+    if ((strstr((char *)rx_buffer, "+CMQTTCONNLOST") != NULL) &&
         is_pb_done == true) {
       printf(
           "-----------------Client Disconnect passively!------------------\n");
@@ -71,7 +75,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
     }
     memset(rx_buffer, '\0', 150);
   }
-  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *) rx_buffer, 150);
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 150);
 }
 
 void create_JSON(void) {

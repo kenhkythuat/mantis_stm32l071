@@ -47,19 +47,19 @@
 #include "stm32l0xx.h"
 
 #if !defined(HSE_VALUE)
-#define HSE_VALUE                                                              \
-  ((uint32_t) 8000000U) /*!< Value of the External oscillator in Hz */
-#endif                  /* HSE_VALUE */
+#define HSE_VALUE \
+  ((uint32_t)8000000U) /*!< Value of the External oscillator in Hz */
+#endif                 /* HSE_VALUE */
 
 #if !defined(MSI_VALUE)
-#define MSI_VALUE                                                              \
-  ((uint32_t) 2097152U) /*!< Value of the Internal oscillator in Hz*/
-#endif                  /* MSI_VALUE */
+#define MSI_VALUE \
+  ((uint32_t)2097152U) /*!< Value of the Internal oscillator in Hz*/
+#endif                 /* MSI_VALUE */
 
 #if !defined(HSI_VALUE)
-#define HSI_VALUE                                                              \
-  ((uint32_t) 16000000U) /*!< Value of the Internal oscillator in Hz*/
-#endif                   /* HSI_VALUE */
+#define HSI_VALUE \
+  ((uint32_t)16000000U) /*!< Value of the Internal oscillator in Hz*/
+#endif                  /* HSI_VALUE */
 
 /**
  * @}
@@ -90,18 +90,18 @@
      in Sram else user remap will be done in Flash. */
 /* #define VECT_TAB_SRAM */
 #if defined(VECT_TAB_SRAM)
-#define VECT_TAB_BASE_ADDRESS                                                  \
-  SRAM_BASE /*!< Vector Table base address field.                              \
+#define VECT_TAB_BASE_ADDRESS                     \
+  SRAM_BASE /*!< Vector Table base address field. \
                  This value must be a multiple of 0x200. */
-#define VECT_TAB_OFFSET                                                        \
-  0x00000000U /*!< Vector Table base offset field.                             \
+#define VECT_TAB_OFFSET                            \
+  0x00000000U /*!< Vector Table base offset field. \
                    This value must be a multiple of 0x200. */
 #else
-#define VECT_TAB_BASE_ADDRESS                                                  \
-  FLASH_BASE /*!< Vector Table base address field.                             \
+#define VECT_TAB_BASE_ADDRESS                      \
+  FLASH_BASE /*!< Vector Table base address field. \
                   This value must be a multiple of 0x200. */
-#define VECT_TAB_OFFSET                                                        \
-  0x00000000U /*!< Vector Table base offset field.                             \
+#define VECT_TAB_OFFSET                            \
+  0x00000000U /*!< Vector Table base offset field. \
                    This value must be a multiple of 0x200. */
 #endif        /* VECT_TAB_SRAM */
 #endif        /* USER_VECT_TAB_ADDRESS */
@@ -239,11 +239,11 @@ void SystemCoreClockUpdate(void) {
       if ((RCC->CR & RCC_CR_HSIDIVF) != 0U) {
         SystemCoreClock = (((HSI_VALUE / 4U) * pllmul) / plldiv);
       } else {
-        SystemCoreClock = (((HSI_VALUE) *pllmul) / plldiv);
+        SystemCoreClock = (((HSI_VALUE)*pllmul) / plldiv);
       }
     } else {
       /* HSE selected as PLL clock entry */
-      SystemCoreClock = (((HSE_VALUE) *pllmul) / plldiv);
+      SystemCoreClock = (((HSE_VALUE)*pllmul) / plldiv);
     }
     break;
   }
