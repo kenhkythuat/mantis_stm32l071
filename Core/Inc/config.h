@@ -17,7 +17,7 @@
 #define FARM "gateway-agriconnect"
 //#define FARM "demox"
 
-#define SIMCOM_MODEL a7670 // #default is a7670 if you use model other please choose enter your model
+#define SIMCOM_MODEL a7672 // #default is a7670 if you use model other please choose enter your model
 #define SAVE_LOAD false
 // Serial number. Must be lower case.
 #ifndef SERIAL_NUMBER

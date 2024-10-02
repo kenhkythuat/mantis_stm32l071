@@ -63,9 +63,9 @@ unsigned int GPIO_LOAD_PIN[10] = {
     PAYLOAD_1_Pin, PAYLOAD_2_Pin, PAYLOAD_3_Pin, PAYLOAD_4_Pin, PAYLOAD_5_Pin,
     PAYLOAD_6_Pin, PAYLOAD_7_Pin, PAYLOAD_8_Pin, PAYLOAD_9_Pin, PAYLOAD_10_Pin};
 
-char AT_COMMAND[100];
+char array_at_command[150];
 float signal_strength = 0;
-int update_10_minute;
+int one_cycle;
 int onReay = 0;
 int rssi = -99;
 
@@ -73,7 +73,7 @@ int time_out_connect_mqtt = 15000;
 int is_pb_done = 0;
 int payLoadPin, payLoadStatus;
 
-char rxBuffer[150];
+char rx_buffer[150];
 char rx_data_sim[150];
 int previousTick;
 int is_connect_simcom = 0;
@@ -81,19 +81,19 @@ int is_connect_mqtt = 0;
 float data_percentage_pin;
 int update_status_to_server;
 
-bool fn_enable_mqtt = false;
-bool fn_connect_mqtt = false;
-bool fn_check_sim = false;
-bool fn_subcribe_mqtt = false;
-bool fn_publish_mqtt = false;
-bool fn_acquier_mqtt = false;
-bool fn_update_status = false;
+bool is_fn_enable_mqtt = false;
+bool is_fn_connect_mqtt = false;
+bool is_fn_check_sim = false;
+bool is_fn_subcribe_mqtt = false;
+bool is_fn_publish_mqtt = false;
+bool is_fn_acquier_mqtt = false;
+bool is_fn_update_status = false;
 
 uint32_t address = 0x0801FC00;
 uint32_t data = 0x01;
 uint32_t read_data = 3;
 uint32_t value_page[4];
-// char rxBuffer[50];
+// char rx_buffer[50];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,14 +103,9 @@ static void MX_USART1_UART_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
-void enable_simcom(void); // reset module sim A76XX
-void processPayload(void);
-int connectSimcomA76xx();
-int connectMQTT();
-void sendingToSimcomA76xx(char *cmd);
+void enable_simcom(void); // reset module simcom A76XX
+void send_to_simcom_a76xx(char *cmd);
 void led_status(char cmd);
-int sendStatusPayloadToMQTT(void);
-void informPayloadToServer(void);
 
 /* USER CODE END PFP */
 
@@ -120,7 +115,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   if (htim->Instance == htim6.Instance) {
     if (is_connect_mqtt) {
       update_status_to_server = 1;
-      update_10_minute++;
+      one_cycle++;
     }
     IWDG->KR = 0xAAAA;
   }
@@ -183,7 +178,7 @@ int main(void) {
 #if SAVE_LOAD
   read_flash_payload();
 #endif
-  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rxBuffer, 150);
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *) rx_buffer, 150);
   HAL_TIM_Base_Start_IT(&htim6);
   enable_simcom();
   is_pb_done = event_wait_function();
@@ -196,20 +191,18 @@ int main(void) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if (!is_connect_mqtt) {
-      is_connect_mqtt = init_cricket();
-    }
+    if (!is_connect_mqtt) { is_connect_mqtt = init_cricket(); }
     if (update_status_to_server == 1) {
-      fn_update_status = update_status();
+      is_fn_update_status = update_status();
       update_status_to_server = 0;
     }
-    if (update_10_minute >= 3) {
+    if (one_cycle >= 3) {
       // data_percentage_pin = Level_Pin();
       rssi = read_signal_quality();
 #if SAVE_LOAD
       read_statusload();
 #endif
-      update_10_minute = 0;
+      one_cycle = 0;
     }
   }
   /* USER CODE END 3 */
@@ -239,9 +232,7 @@ void SystemClock_Config(void) {
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_8;
   RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    Error_Handler();
-  }
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) { Error_Handler(); }
 
   /** Initializes the CPU, AHB and APB buses clocks
    */
@@ -257,9 +248,7 @@ void SystemClock_Config(void) {
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
-    Error_Handler();
-  }
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) { Error_Handler(); }
 }
 
 /**
@@ -280,9 +269,7 @@ static void MX_IWDG_Init(void) {
   hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
   hiwdg.Init.Window = 4095;
   hiwdg.Init.Reload = 4095;
-  if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
-    Error_Handler();
-  }
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK) { Error_Handler(); }
   /* USER CODE BEGIN IWDG_Init 2 */
 
   /* USER CODE END IWDG_Init 2 */
@@ -309,9 +296,7 @@ static void MX_TIM6_Init(void) {
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 4999;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim6) != HAL_OK) {
-    Error_Handler();
-  }
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK) { Error_Handler(); }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK) {
@@ -346,9 +331,7 @@ static void MX_USART1_UART_Init(void) {
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart1) != HAL_OK) {
-    Error_Handler();
-  }
+  if (HAL_UART_Init(&huart1) != HAL_OK) { Error_Handler(); }
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
@@ -452,8 +435,7 @@ void Error_Handler(void) {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1) {
-  }
+  while (1) {}
   /* USER CODE END Error_Handler_Debug */
 }
 
