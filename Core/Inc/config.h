@@ -14,14 +14,14 @@
 
 // Codename of the farm, where we deploy this node to.
 
-#define FARM "queenfarm-edn"
+#define FARM "gateway-agriconnect"
 //#define FARM "demox"
 
 #define SIMCOM_MODEL a7670 // #default is a7670 if you use model other please choose enter your model
 #define SAVE_LOAD false
 // Serial number. Must be lower case.
 #ifndef SERIAL_NUMBER
-  #define SERIAL_NUMBER "sw000200"
+  #define SERIAL_NUMBER "sw000195"
 #endif
 
 //#define MQTT_USER "node" 		// User - connect to MQTT broker

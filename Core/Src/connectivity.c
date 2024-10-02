@@ -29,44 +29,50 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
     times = strlen(rxBuffer);
     for (int i = 0; i < times; i++) {
       rx_data_sim[i] = rxBuffer[i];
-      if ((char)rxBuffer[i] == (char)SERIAL_NUMBER[5] && (char)rxBuffer[i + 1] == (char)SERIAL_NUMBER[6] && (char)rxBuffer[i + 2] == (char)SERIAL_NUMBER[7]) {
+      if ((char)rxBuffer[i] == (char)SERIAL_NUMBER[5] &&
+          (char)rxBuffer[i + 1] == (char)SERIAL_NUMBER[6] &&
+          (char)rxBuffer[i + 2] == (char)SERIAL_NUMBER[7]) {
         payLoadPin = (rxBuffer[i + 4] - 48);
 #if SIMCOM_MODEL == a7672
-        if (rxBuffer[(i + 29)] == 49 && isPBDONE == true)
+        if (rxBuffer[(i + 29)] == 49 && is_pb_done == true)
 #elif SIMCOM_MODEL == a7670
-        if (rxBuffer[(i + 31)] == 49 && isPBDONE == true)
-#elif  SIMCOM_MODEL == a7677
-        if (rxBuffer[(i + 29)] == 49 && isPBDONE == true)
+        if (rxBuffer[(i + 31)] == 49 && is_pb_done == true)
+#elif SIMCOM_MODEL == a7677
+        if (rxBuffer[(i + 29)] == 49 && is_pb_done == true)
 #endif
         {
           printf("-----------ON RELAY %d -----------\r\n", payLoadPin);
-          HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1], GPIO_LOAD_PIN[payLoadPin - 1], 1);
+          HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1],
+                            GPIO_LOAD_PIN[payLoadPin - 1], 1);
           onReay++;
           if (onReay >= NUMBER_LOADS) {
             onReay = NUMBER_LOADS;
           }
-          //HAL_GPIO_WritePin(ON_OFF_PWM_GPIO_Port, ON_OFF_PWM_Pin, 0);
+          // HAL_GPIO_WritePin(ON_OFF_PWM_GPIO_Port, ON_OFF_PWM_Pin, 0);
         }
 #if SIMCOM_MODEL == a7672
-        if (rxBuffer[(i + 29)] == 48 && isPBDONE == true)
+        if (rxBuffer[(i + 29)] == 48 && is_pb_done == true)
 #elif SIMCOM_MODEL == a7670
-        if (rxBuffer[(i + 31)] == 48 && isPBDONE == true)
+        if (rxBuffer[(i + 31)] == 48 && is_pb_done == true)
 #elif SIMCOM_MODEL == a7677
-        if (rxBuffer[(i + 29)] == 48 && isPBDONE == true)
+        if (rxBuffer[(i + 29)] == 48 && is_pb_done == true)
 #endif
         {
           printf("-----------OFF RELAY %d -----------\r\n", payLoadPin);
-          HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1], GPIO_LOAD_PIN[payLoadPin - 1], 0);
+          HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1],
+                            GPIO_LOAD_PIN[payLoadPin - 1], 0);
           onReay--;
           if (onReay <= 0) {
             onReay = 0;
-            //HAL_GPIO_WritePin(ON_OFF_PWM_GPIO_Port, ON_OFF_PWM_Pin, 1);
+            // HAL_GPIO_WritePin(ON_OFF_PWM_GPIO_Port, ON_OFF_PWM_Pin, 1);
           }
         }
       }
     }
-    if ((strstr((char *)rxBuffer, "+CMQTTCONNLOST") != NULL) && isPBDONE == true) {
-      printf("-----------------Client Disconnect passively!------------------\n");
+    if ((strstr((char *)rxBuffer, "+CMQTTCONNLOST") != NULL) &&
+        is_pb_done == true) {
+      printf(
+          "-----------------Client Disconnect passively!------------------\n");
       check_error_mqtt_via_gsm();
     }
     memset(rxBuffer, '\0', 150);
@@ -77,15 +83,16 @@ void create_JSON(void) {
   cJSON *json = cJSON_CreateObject();
   for (int i = 1; i < NUMBER_LOADS + 1; i++) {
     int statusOfLoad;
-    statusOfLoad = HAL_GPIO_ReadPin(GPIO_LOAD_PORT[i - 1], GPIO_LOAD_PIN[i - 1]);
+    statusOfLoad =
+        HAL_GPIO_ReadPin(GPIO_LOAD_PORT[i - 1], GPIO_LOAD_PIN[i - 1]);
     static char payload1[2];
     sprintf(payload1, "%d", i);
     cJSON_AddNumberToObject(json, payload1, statusOfLoad);
   }
-//  Data_Percentage_pin = Level_Pin();
-//  rssi = read_signal_quality();
+  //  Data_Percentage_pin = Level_Pin();
+  //  rssi = read_signal_quality();
   cJSON_AddNumberToObject(json, "_gsm_signal_strength", rssi);
-//  cJSON_AddNumberToObject(json, "_battery_level", Data_Percentage_pin);
+  //  cJSON_AddNumberToObject(json, "_battery_level", Data_Percentage_pin);
   char *json_string = cJSON_Print(json);
   if (json_string == NULL) {
     printf("New create error JSON\n");
@@ -97,5 +104,3 @@ void create_JSON(void) {
   free(json_string);
   cJSON_Delete(json);
 }
-
-
