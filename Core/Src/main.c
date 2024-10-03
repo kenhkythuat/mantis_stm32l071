@@ -94,6 +94,10 @@ uint32_t address = 0x0801FC00;
 uint32_t data = 0x01;
 uint32_t read_data = 3;
 uint32_t value_page[4];
+
+enum GmsModemState CurrentStatusSimcom = Off;
+uint8_t check_error_internet;
+uint8_t check_error_mqtt;
 // char rx_buffer[50];
 /* USER CODE END PV */
 
@@ -114,7 +118,7 @@ void led_status(char cmd);
 /* USER CODE BEGIN 0 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   if (htim->Instance == htim6.Instance) {
-    if (is_connect_mqtt) {
+    if (CurrentStatusSimcom == Subscribed) {
       frequency_1hz++;
       if (frequency_1hz >= INTERVAL_PUPLISH_DATA) {
         update_status_to_server = 1;
@@ -144,6 +148,66 @@ void led_status(char cmd) {
     HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, RESET);
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, RESET);
     HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, RESET);
+  }
+}
+void fn_handle_state(enum GmsModemState status) {
+  switch (status) {
+  case Off: {
+    enable_simcom();
+    is_pb_done = event_wait_function();
+    if (is_pb_done) {
+      CurrentStatusSimcom = On;
+      printf("Current status Simcom On \r\n");
+    } else {
+      NVIC_SystemReset();
+    }
+    break;
+  }
+
+  case On: {
+    is_fn_check_sim = fn_check_signal_simcom();
+    if (is_fn_check_sim) {
+      CurrentStatusSimcom = InternetReady;
+      printf("Current status Simcom Internet Ready\r\n");
+    } else {
+      NVIC_SystemReset();
+    }
+    break;
+  }
+
+  case InternetReady: {
+    is_fn_enable_mqtt = enable_mqtt_on_gsm_modem();
+    if (is_fn_enable_mqtt) {
+      is_fn_acquier_mqtt = acquire_gsm_mqtt_client();
+    }
+    if (is_fn_acquier_mqtt) {
+      is_fn_connect_mqtt = connect_mqtt_server_by_gsm();
+    }
+    if (is_fn_connect_mqtt) {
+      CurrentStatusSimcom = MqttReady;
+      printf("Current status Simcom MQTT Ready\r\n");
+    }
+    break;
+  }
+
+  case MqttReady: {
+    is_fn_subcribe_mqtt = subscribe_mqtt_via_gsm();
+    if (is_fn_subcribe_mqtt) {
+      CurrentStatusSimcom = Subscribed;
+      printf("Current status Simcom Subscribed \r\n");
+    }
+    break;
+  }
+
+  case Subscribed: {
+    if (update_status_to_server) {
+      is_fn_update_status = update_status();
+      update_status_to_server = 0;
+    }
+    break;
+  }
+  default:
+    printf("Case cannot be determined !\r\n");
   }
 }
 /* USER CODE END 0 */
@@ -198,21 +262,7 @@ int main(void) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if (!is_connect_mqtt) {
-      is_connect_mqtt = init_cricket();
-    }
-    if (update_status_to_server == 1) {
-      is_fn_update_status = update_status();
-      update_status_to_server = 0;
-    }
-    if (one_cycle >= 3) {
-      // data_percentage_pin = Level_Pin();
-      rssi = read_signal_quality();
-#if SAVE_LOAD
-      write_load_statues();
-#endif
-      one_cycle = 0;
-    }
+    fn_handle_state(CurrentStatusSimcom);
   }
   /* USER CODE END 3 */
 }

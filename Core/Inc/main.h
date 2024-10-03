@@ -144,9 +144,19 @@ extern bool is_fn_check_sim;
 extern bool is_fn_subcribe_mqtt;
 extern bool is_fn_publish_mqtt;
 extern bool is_fn_acquier_mqtt;
-extern bool fn_update_status;
+extern bool is_fn_update_status;
 extern GPIO_TypeDef* GPIO_LOAD_PORT[10];
 extern unsigned int GPIO_LOAD_PIN[10];
+enum GmsModemState
+{
+	Off,
+	On,
+	InternetReady,
+	MqttReady,
+	Subscribed,
+	UpdateToServer
+};
+extern enum GmsModemState CurrentStatusSimcom;
 
 /* USER CODE END Private defines */
 
