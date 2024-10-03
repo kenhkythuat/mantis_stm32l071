@@ -12,7 +12,7 @@
 #define Address 0x08000000 + 1024 * 60
 
 int val;
-int Read;
+int read_status;
 uint32_t status;
 uint32_t value_page0;
 uint32_t value_page1;
@@ -38,8 +38,8 @@ void read_flash_payload(void) {
     HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin + i],
                       GPIO_LOAD_PIN[payLoadPin + i], temp);
   }
-  onReay = *(uint32_t *)(Address + 64);
-  if (onReay > 0) {
+  on_relay = *(uint32_t *)(Address + 64);
+  if (on_relay > 0) {
     // HAL_GPIO_WritePin(ON_OFF_PWM_GPIO_Port, ON_OFF_PWM_Pin, 0);
   }
 }
@@ -55,11 +55,11 @@ void write_flash(int move, uint32_t Data) {
   HAL_FLASH_Lock();
 }
 
-void read_statusload() {
+void write_load_statues() {
   flash_erase(1);
   for (int i = 0; i < NUMBER_LOADS; i++) {
-    Read = HAL_GPIO_ReadPin(GPIO_LOAD_PORT[i], GPIO_LOAD_PIN[i]);
-    status_load[val] = Read;
+    read_status = HAL_GPIO_ReadPin(GPIO_LOAD_PORT[i], GPIO_LOAD_PIN[i]);
+    status_load[val] = read_status;
     val++;
     write_flash((i * 16), status_load[i]);
     HAL_Delay(100);

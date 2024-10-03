@@ -44,9 +44,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
           printf("-----------ON RELAY %d -----------\r\n", payLoadPin);
           HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1],
                             GPIO_LOAD_PIN[payLoadPin - 1], 1);
-          onReay++;
-          if (onReay >= NUMBER_LOADS) {
-            onReay = NUMBER_LOADS;
+          on_relay++;
+          if (on_relay >= NUMBER_LOADS) {
+            on_relay = NUMBER_LOADS;
           }
         }
 #if SIMCOM_MODEL == a7672
@@ -60,9 +60,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
           printf("-----------OFF RELAY %d -----------\r\n", payLoadPin);
           HAL_GPIO_WritePin(GPIO_LOAD_PORT[payLoadPin - 1],
                             GPIO_LOAD_PIN[payLoadPin - 1], 0);
-          onReay--;
-          if (onReay <= 0) {
-            onReay = 0;
+          on_relay--;
+          if (on_relay <= 0) {
+            on_relay = 0;
           }
         }
       }

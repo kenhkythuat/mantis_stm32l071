@@ -66,7 +66,7 @@ unsigned int GPIO_LOAD_PIN[10] = {
 char array_at_command[150];
 float signal_strength = 0;
 int one_cycle;
-int onReay = 0;
+int on_relay = 0;
 int rssi = -99;
 
 int time_out_connect_mqtt = 15000;
@@ -209,7 +209,7 @@ int main(void) {
       // data_percentage_pin = Level_Pin();
       rssi = read_signal_quality();
 #if SAVE_LOAD
-      read_statusload();
+      write_load_statues();
 #endif
       one_cycle = 0;
     }
@@ -450,8 +450,12 @@ void enable_simcom(void) {
 void Error_Handler(void) {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+
+  printf("\r\n-----------------Detect system error------------------");
+  HAL_Delay(1000);
   __disable_irq();
   while (1) {
+    NVIC_SystemReset();
   }
   /* USER CODE END Error_Handler_Debug */
 }

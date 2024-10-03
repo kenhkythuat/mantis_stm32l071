@@ -61,8 +61,6 @@ float fn_check_signal_simcom(void) {
     printf("-----------------SIM OK !------------------\n");
   } else
     return 0;
-  //  send_to_simcom_a76xx("AT+CREG=2\r\n");
-  //  HAL_Delay(5000);
   HAL_Delay(200);
   send_to_simcom_a76xx("AT+CREG?\r\n");
   HAL_Delay(200);
@@ -372,7 +370,7 @@ void restart_stm32(void) {
   printf("\r\n-----------------GOOD BYE !------------------\r\n");
   stop_mqtt_via_gsm();
 #if SAVE_LOAD
-  read_statusload();
+  write_load_statues();
 #endif
   NVIC_SystemReset();
 }
@@ -445,16 +443,16 @@ int check_active_payload(void) {
     static int temp = 0;
     temp = HAL_GPIO_ReadPin(GPIO_LOAD_PORT[i - 1], GPIO_LOAD_PIN[i - 1]);
     if (temp == 1) {
-      onReay++;
+      on_relay++;
     } else
-      onReay--;
+      on_relay--;
   }
-  if (onReay >= NUMBER_LOADS) {
-    onReay = NUMBER_LOADS;
+  if (on_relay >= NUMBER_LOADS) {
+    on_relay = NUMBER_LOADS;
   }
-  if (onReay <= 0) {
+  if (on_relay <= 0) {
     // HAL_GPIO_WritePin(ON_OFF_PWM_GPIO_Port, ON_OFF_PWM_Pin, 0);
-    onReay = 0;
+    on_relay = 0;
   }
-  return onReay;
+  return on_relay;
 }

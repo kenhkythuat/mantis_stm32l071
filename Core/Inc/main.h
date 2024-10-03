@@ -38,7 +38,7 @@ extern "C" {
 /* USER CODE BEGIN ET */
 #include "stdbool.h"
 float Level_Pin (void);
-void read_statusload();
+void write_load_statues();
 void flash_erase(uint32_t numberpages);
 void write_flash(int move ,uint32_t Data);
 uint32_t read_page();
@@ -128,7 +128,7 @@ extern char rx_data_sim[150];
 extern char array_at_command[150];
 extern int is_pb_done;
 extern int isATOK;
-extern int onReay;
+extern int on_relay;
 extern int is_connect_mqtt;
 extern int previousTick;
 extern int timeOutConnectMQTT;
