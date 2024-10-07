@@ -89,6 +89,7 @@ bool is_fn_subcribe_mqtt = false;
 bool is_fn_publish_mqtt = false;
 bool is_fn_acquier_mqtt = false;
 bool is_fn_update_status = false;
+uint8_t total_errors = 0;
 
 uint32_t address = 0x0801FC00;
 uint32_t data = 0x01;
@@ -163,18 +164,20 @@ void fn_handle_state(enum GmsModemState status) {
     }
     break;
   }
-
   case On: {
     is_fn_check_sim = fn_check_signal_simcom();
     if (is_fn_check_sim) {
+    	total_errors=0;
       CurrentStatusSimcom = InternetReady;
       printf("Current status Simcom Internet Ready\r\n");
     } else {
+    	total_errors++;
+    }
+    if (total_errors > 5) {
       NVIC_SystemReset();
     }
     break;
   }
-
   case InternetReady: {
     is_fn_enable_mqtt = enable_mqtt_on_gsm_modem();
     if (is_fn_enable_mqtt) {
@@ -184,28 +187,45 @@ void fn_handle_state(enum GmsModemState status) {
       is_fn_connect_mqtt = connect_mqtt_server_by_gsm();
     }
     if (is_fn_connect_mqtt) {
+      total_errors = 0;
+      led_status('G');
       CurrentStatusSimcom = MqttReady;
       printf("Current status Simcom MQTT Ready\r\n");
+    } else
+      total_errors++;
+    if (total_errors > 5) {
+      NVIC_SystemReset();
     }
     break;
   }
-
   case MqttReady: {
     is_fn_subcribe_mqtt = subscribe_mqtt_via_gsm();
     if (is_fn_subcribe_mqtt) {
+      total_errors = 0;
       CurrentStatusSimcom = Subscribed;
       printf("Current status Simcom Subscribed \r\n");
+    } else
+      total_errors++;
+    if (total_errors > 5) {
+      NVIC_SystemReset();
+    }
+    break;
+  }
+  case Subscribed: {
+    if (update_status_to_server) {
+      is_fn_update_status = update_status();
+      if (is_fn_update_status) {
+        update_status_to_server = 0;
+        total_errors = 0;
+      } else {
+        total_errors++;
+        stop_mqtt_via_gsm();
+        CurrentStatusSimcom = On;
+      }
     }
     break;
   }
 
-  case Subscribed: {
-    if (update_status_to_server) {
-      is_fn_update_status = update_status();
-      update_status_to_server = 0;
-    }
-    break;
-  }
   default:
     printf("Case cannot be determined !\r\n");
   }
@@ -251,8 +271,8 @@ int main(void) {
 #endif
   HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 150);
   HAL_TIM_Base_Start_IT(&htim6);
-  enable_simcom();
-  is_pb_done = event_wait_function();
+  //  enable_simcom();
+  //  is_pb_done = event_wait_function();
 
   /* USER CODE END 2 */
 

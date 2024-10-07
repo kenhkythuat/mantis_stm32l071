@@ -154,7 +154,8 @@ enum GmsModemState
 	InternetReady,
 	MqttReady,
 	Subscribed,
-	UpdateToServer
+	UpdateToServer,
+	DisconnectMqtt
 };
 extern enum GmsModemState CurrentStatusSimcom;
 

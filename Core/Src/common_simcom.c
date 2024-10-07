@@ -43,6 +43,7 @@ int read_signal_quality(void) {
 }
 
 float fn_check_signal_simcom(void) {
+    led_status('B');
   printf("-----------------fn_check_signal_simcom------------------\n");
   send_to_simcom_a76xx("ATE0\r\n");
   HAL_Delay(200);
@@ -85,6 +86,7 @@ float fn_check_signal_simcom(void) {
 }
 
 int enable_mqtt_on_gsm_modem(void) {
+	is_fn_enable_mqtt=false;
   send_to_simcom_a76xx("AT+CMQTTSTART\r\n");
   HAL_Delay(400);
   if ((strstr((char *)rx_data_sim, "+CMQTTSTART: 0") != NULL) ||
@@ -100,6 +102,7 @@ int enable_mqtt_on_gsm_modem(void) {
 }
 
 int acquire_gsm_mqtt_client(void) {
+	is_fn_acquier_mqtt=false;
   printf("-----------------acquire_gsm_mqtt_client------------------\n");
   sprintf(array_at_command, "+CMQTTACCQ: 0,\"%s\",0\r\n", MQTT_CLIENT_ID);
   send_to_simcom_a76xx("AT+CMQTTACCQ?\r\n");
@@ -129,6 +132,7 @@ int acquire_gsm_mqtt_client(void) {
 }
 
 int connect_mqtt_server_by_gsm(void) {
+	is_fn_connect_mqtt=false;
   sprintf(array_at_command, "+CMQTTCONNECT: 0,\"%s:%d\",20,1,\"%s\",\"%s\"\r\n",
           MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS);
   HAL_Delay(200);
@@ -339,35 +343,21 @@ int stop_mqtt_via_gsm(void) {
 }
 
 int update_status(void) {
-  for (int i = 1; i <= 10; i++) {
+  for (int i = 1; i <= 3; i++) {
+	  is_fn_update_status=false;
     is_fn_publish_mqtt = publish_mqtt_via_gsm();
     if (is_fn_publish_mqtt) {
       return 1;
     }
   }
   if (!is_fn_publish_mqtt) {
-    int temp = 0;
-    count_errors = 0;
-    for (int i = 1; i <= 5; i++) {
-      temp = check_error_mqtt_via_gsm();
-      if (!temp) {
-        count_errors++;
-        printf("-----------------UPDATE FAIL %d!------------------\n",
-               count_errors);
-        if (count_errors >= 4) {
-          restart_stm32();
-        }
-      } else {
-        count_errors = 0;
-        break;
-      }
-    }
+	  return 0;
   }
-  return 1;
+  return 0;
 }
 void restart_stm32(void) {
   printf("\r\n-----------------Restart STM32------------------\r\n");
-  printf("\r\n-----------------GOOD BYE !------------------\r\n");
+  	  	  printf("\r\n-----------------GOOD BYE !------------------\r\n");
   stop_mqtt_via_gsm();
 #if SAVE_LOAD
   write_load_statues();
