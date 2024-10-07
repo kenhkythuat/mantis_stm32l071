@@ -17,7 +17,7 @@
 #define FARM "gateway-agriconnect"
 //#define FARM "demox"
 
-#define SIMCOM_MODEL a7672 // #default is a7670 if you use model other please choose enter your model
+#define SIMCOM_MODEL a7670 // #default is a7670 if you use model other please choose enter your model
 #define SAVE_LOAD false
 #define INTERVAL_PUPLISH_DATA 10 // the time the device sends data to the server
 #define NUMBER_LOADS 8

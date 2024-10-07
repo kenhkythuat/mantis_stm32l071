@@ -271,9 +271,6 @@ int main(void) {
 #endif
   HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 150);
   HAL_TIM_Base_Start_IT(&htim6);
-  //  enable_simcom();
-  //  is_pb_done = event_wait_function();
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
