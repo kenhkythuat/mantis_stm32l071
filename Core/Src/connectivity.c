@@ -73,9 +73,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
           "-----------------Client Disconnect passively!------------------\n");
       check_error_mqtt_via_gsm();
     }
-    memset(rx_buffer, '\0', 150);
+    memset(rx_buffer, '\0', 800);
   }
-  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 150);
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 800);
 }
 
 void create_JSON(void) {

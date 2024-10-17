@@ -87,7 +87,7 @@ extern void led_status(char cmd);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void sendingToSimcomA76xx(char *cmd);
+//void send_to_simcom_a76xx(char *cmd);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -123,8 +123,8 @@ void sendingToSimcomA76xx(char *cmd);
 #define PAYLOAD_10_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-extern char rx_buffer[150];
-extern char rx_data_sim[150];
+extern char rx_buffer[800];
+extern char rx_data_sim[800];
 extern char array_at_command[150];
 extern int is_pb_done;
 extern int isATOK;
