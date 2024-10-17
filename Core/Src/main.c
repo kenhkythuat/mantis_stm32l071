@@ -218,9 +218,12 @@ void fn_handle_state(enum GmsModemState status) {
         update_status_to_server = 0;
         total_errors = 0;
       } else {
-        total_errors++;
-        stop_mqtt_via_gsm();
-        CurrentStatusSimcom = On;
+          total_errors++;
+          if (total_errors > 5) {
+            stop_mqtt_via_gsm();
+            CurrentStatusSimcom = On;
+      }
+
       }
     }
     break;
