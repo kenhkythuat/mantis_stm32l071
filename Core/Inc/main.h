@@ -38,10 +38,10 @@ extern "C" {
 /* USER CODE BEGIN ET */
 #include "stdbool.h"
 float Level_Pin (void);
-void read_statusload();
-void Flash_Erase(uint32_t numberpages);
-void Flash_write(int move ,uint32_t Data);
-uint32_t Read_Page();
+void write_load_statues();
+void flash_erase(uint32_t numberpages);
+void write_flash(int move ,uint32_t Data);
+uint32_t read_page();
 extern uint32_t value_page0;
 extern uint32_t value_page1;
 extern uint32_t value_page2;
@@ -62,8 +62,7 @@ extern uint32_t value_Relay;
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 extern void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size);
-extern int connectMQTT(void);
-extern void sendingToSimcomA76xx(char *cmd);
+extern void send_to_simcom_a76xx(char *cmd);
 extern void create_JSON(void);
 extern float fn_check_signal_simcom(void);
 extern int acquire_gsm_mqtt_client(void);
@@ -80,7 +79,7 @@ extern int init_cricket(void);
 extern int event_wait_function(void);
 extern int check_active_payload(void);
 extern void read_flash_payload(void);
-extern void ledStatus(char cmd);
+extern void led_status(char cmd);
 
 /* USER CODE END EM */
 
@@ -124,30 +123,41 @@ void sendingToSimcomA76xx(char *cmd);
 #define PAYLOAD_10_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-extern char rxBuffer[150];
+extern char rx_buffer[150];
 extern char rx_data_sim[150];
-extern char AT_COMMAND[100];
-extern int isPBDONE;
+extern char array_at_command[150];
+extern int is_pb_done;
 extern int isATOK;
-extern int onReay;
-extern int isConnectMQTT;
+extern int on_relay;
+extern int is_connect_mqtt;
 extern int previousTick;
 extern int timeOutConnectMQTT;
 extern int payLoadPin,payLoadStatus;
 extern char array_json[150];
-extern float Data_Percentage_pin;
-extern float SignalStrength;
+extern float data_percentage_pin;
+extern float signal_strength;
 extern int rssi;
-extern int isConnectSimcomA76xx;
-extern bool fn_Enable_MQTT;
-extern bool fn_Connect_MQTT;
-extern bool fn_CheckSim;
-extern bool fn_Subcribe_MQTT;
-extern bool fn_Publish_MQTT;
-extern bool fn_Acquier_MQTT;
-extern bool fn_update_status;
+extern int is_connect_simcom;
+extern bool is_fn_enable_mqtt;
+extern bool is_fn_connect_mqtt;
+extern bool is_fn_check_sim;
+extern bool is_fn_subcribe_mqtt;
+extern bool is_fn_publish_mqtt;
+extern bool is_fn_acquier_mqtt;
+extern bool is_fn_update_status;
 extern GPIO_TypeDef* GPIO_LOAD_PORT[10];
 extern unsigned int GPIO_LOAD_PIN[10];
+enum GmsModemState
+{
+	Off,
+	On,
+	InternetReady,
+	MqttReady,
+	Subscribed,
+	UpdateToServer,
+	DisconnectMqtt
+};
+extern enum GmsModemState CurrentStatusSimcom;
 
 /* USER CODE END Private defines */
 
