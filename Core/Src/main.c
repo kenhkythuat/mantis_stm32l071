@@ -63,7 +63,7 @@ unsigned int GPIO_LOAD_PIN[10] = {
     PAYLOAD_1_Pin, PAYLOAD_2_Pin, PAYLOAD_3_Pin, PAYLOAD_4_Pin, PAYLOAD_5_Pin,
     PAYLOAD_6_Pin, PAYLOAD_7_Pin, PAYLOAD_8_Pin, PAYLOAD_9_Pin, PAYLOAD_10_Pin};
 
-char array_at_command[150];
+char array_at_command[200];
 float signal_strength = 0;
 int one_cycle;
 int on_relay = 0;
@@ -73,8 +73,8 @@ int time_out_connect_mqtt = 15000;
 int is_pb_done = 0;
 int payLoadPin, payLoadStatus;
 
-char rx_buffer[800];
-char rx_data_sim[800];
+char rx_buffer[1024];
+char rx_data_sim[1024];
 int previousTick;
 int is_connect_simcom = 0;
 int is_connect_mqtt = 0;

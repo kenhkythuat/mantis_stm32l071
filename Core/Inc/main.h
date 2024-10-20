@@ -123,9 +123,9 @@ void Error_Handler(void);
 #define PAYLOAD_10_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-extern char rx_buffer[800];
-extern char rx_data_sim[800];
-extern char array_at_command[150];
+extern char rx_buffer[1024];
+extern char rx_data_sim[1024];
+extern char array_at_command[200];
 extern int is_pb_done;
 extern int isATOK;
 extern int on_relay;
@@ -133,7 +133,7 @@ extern int is_connect_mqtt;
 extern int previousTick;
 extern int timeOutConnectMQTT;
 extern int payLoadPin,payLoadStatus;
-extern char array_json[150];
+extern char array_json[200];
 extern float data_percentage_pin;
 extern float signal_strength;
 extern int rssi;

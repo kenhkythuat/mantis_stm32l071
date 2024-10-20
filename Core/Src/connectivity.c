@@ -13,7 +13,7 @@
 #include "string.h"
 #include <math.h>
 extern UART_HandleTypeDef huart1;
-char array_json[150];
+char array_json[200];
 // float Percentage_battery;
 
 void send_to_simcom_a76xx(char *cmd) {
@@ -73,9 +73,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
           "-----------------Client Disconnect passively!------------------\n");
       check_error_mqtt_via_gsm();
     }
-    memset(rx_buffer, '\0', 800);
+    memset(rx_buffer, '\0', 1024);
   }
-  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 800);
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, (uint8_t *)rx_buffer, 1024);
 }
 
 void create_JSON(void) {
